@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infobip People WebSDK Demo</title>
+
+  <script>
+    // Load Infobip People WebSDK
+    (function (e, t, n, o) {
+      e.PeopleEventsObject = o;
+      e[o] = e[o] || {
+        init: function (t) {
+          e[o].apiKey = t;
+        },
+        setPerson: function (t, n) {
+          e[o].person = t;
+          e[o].personTtl = n;
+        },
+        forgetPerson: function () {
+          e[o].toForgetPerson = true;
+        },
+        track: function () {
+          (e[o].q = e[o].q || []).push(arguments);
+        },
+        updatePerson: function (t) {
+          e[o].personToUpdate = { person: t };
+        },
+        appendToList: function (t, n) {
+          e[o].attributeToAppend = { attributeName: t, attribute: n };
+        },
+      };
+      var r = t.createElement("script");
+      var s = t.getElementsByTagName("script")[0];
+      r.async = 1;
+      r.src = n;
+      s.parentNode.insertBefore(r, s);
+    })(
+      window,
+      document,
+      "https://s3.eu-central-1.amazonaws.com/portal-cdn-production/people-events-sdk/pe.latest-2.js",
+      "pe"
+    );
+
+    // Initialize the Infobip WebSDK with your API key
+    pe.init("8dbf14630365928c5cdd672534a9f29a-0a769b9b-dc7d-453e-b98d-8feb964a1bb6");
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Infobip People Registration Demo</h1>
+  </header>
+  <main>
+    <form id="registrationForm">
+      <div>
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required>
+      </div>
+      <div>
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required>
+      </div>
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone">
+      </div>
+      <button type="submit">Register</button>
+    </form>
+    <p id="message" style="color: green;"></p>
+  </main>
+
+  <script>
+    // Handle form submission
+    document.getElementById("registrationForm").addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      // Get form input values
+      const firstName = document.getElementById("firstName").value.trim();
+      const lastName = document.getElementById("lastName").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
+      if (!validateEmail(email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+
+      // Create person object
+      const person = {
+        email: email,
+        customAttributes: {
+          firstName: firstName,
+          lastName: lastName,
+          phone: phone,
+        },
+      };
+
+      try {
+        // Register the person with Infobip People WebSDK
+        await pe.setPerson(person);
+        console.log("User registered successfully in Infobip People:", person);
+
+        // Track a custom event
+        await pe.track("user_registered");
+        console.log("Custom event 'user_registered' tracked.");
+
+        // Show success message
+        document.getElementById("message").textContent = "Registration successful!";
+      } catch (error) {
+        console.error("Error during registration:", error);
+        alert("An error occurred while registering. Please try again.");
+      }
+    });
+
+    // Email validation function
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+  </script>
+</body>
+</html>
