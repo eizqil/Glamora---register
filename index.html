@@ -105,6 +105,11 @@
         await pe.setPerson(person);
         console.log("User registered successfully in Infobip People:", person);
 
+  await pe.updatePerson({
+      firstName: firstName,
+      lastName: lastName,
+    }
+        
         // Track a custom event
         await pe.track("user_registered");
         console.log("Custom event 'user_registered' tracked.");
