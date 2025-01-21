@@ -105,11 +105,12 @@
 
       try {
         // Register the person with Infobip People WebSDK
-        await pe.setPerson(person);
-        firstName,
+        await pe.setPerson(
+        {firstName,
         lastName,
         email,
         phone,
+          });
         console.log("User registered successfully in Infobip People:", person);
 
   await pe.updatePerson({
